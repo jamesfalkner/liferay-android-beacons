@@ -134,6 +134,8 @@ State can be either `inside` or `outside`. If the state is determined to be *unk
 		console.log("power: " + e.power);
 	}
 
+Note that the proximity could be one of `immediate`, `near`, `far`, or `unknown`. See the [Radius Networks' docs](http://developer.radiusnetworks.com/android-ibeacon-service/doc/com/radiusnetworks/ibeacon/IBeacon.html) for more detail about accuracy, rssi, and power values given in the callback object.
+
 ### Foreground vs. Background
 
 It is is a good idea for apps to reduce their power consumption when placed in the background by
