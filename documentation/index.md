@@ -167,7 +167,7 @@ is detected), then the device will scan for iBeacons for 1000ms, then wait 2000m
 `TiBeacons.setBackgroundMode(true);` when the app is sent to the background), it will scan for iBeacons for 5000ms,
 followed by a 60000ms wait, and repeat.
 
-Check out [the source code to the underlying Radius Networks module](rvice/blob/master/src/main/java/com/radiusnetworks/ibeacon/service/IBeaconService.java) for a longer discussion on the best values to use,
+Check out [the source code to the underlying Radius Networks module](https://github.com/RadiusNetworks/android-ibeacon-service/blob/master/src/main/java/com/radiusnetworks/ibeacon/service/IBeaconService.java) for a longer discussion on the best values to use,
 and the defaults.
 
 ## Author
