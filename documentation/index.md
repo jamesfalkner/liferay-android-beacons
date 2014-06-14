@@ -144,7 +144,13 @@ To that end, this module can be configured with different scan periods for foreg
 however **this module DOES NOT DETECT when your app is sent to the background or brought back to the foreground**.
 You must manually detect foreground/background events and call the appropriate APIs on this module to tell it
 that it is now in the background and should use the background scan periods. Check out [Ben Bahrenburg's excellent
-Android Tools](https://github.com/benbahrenburg/benCoding.Android.Tools) for a super-easy way to auto-detect this.
+Android Tools](https://github.com/benbahrenburg/benCoding.Android.Tools) for a super-easy way to auto-detect this. Here's an example:
+
+        var androidPlatformTools = require('bencoding.android.tools').createPlatform();
+        var isForeground = androidPlatformTools.isInForeground();
+        console.log("Am I currently in the foreground? " + isForeground);
+
+You can call this repeatedly (e.g. every 5 seconds) using `setInterval()` and when foreground vs. background is detected, call `TiBeacons.setBackgroundMode()`. At least that's what I do.
 
 To configure the scan periods for foreground and background:
 
