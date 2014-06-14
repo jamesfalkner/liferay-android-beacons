@@ -11,7 +11,7 @@ proximity reports.
 This module can be installed and used in Titanium projects like any other module. To download the latest
 binary module, check out the `dist/` directory in this project.
 
-Once installed, read the documentation in the `documentation/` directory to learn how to interact with your iBeacons.
+Once installed, [read the documentation](https://github.com/jamesfalkner/liferay-android-beacons/blob/master/documentation/index.md) (it lives in the `documentation/` directory) to learn how to interact with your iBeacons.
 
 ## Requires for building
 
