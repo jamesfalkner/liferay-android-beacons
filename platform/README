@@ -1,0 +1,23 @@
+#
+# Copyright 2014 Liferay, Inc. All rights reserved.
+# http://www.liferay.com
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+You can place platform-specific files here in sub-folders named "android" and/or "iphone",
+just as you can with normal Titanium Mobile SDK projects.  Any folders and files you place
+here will be merged with the platform-specific files in a Titanium Mobile project that uses this module.
+
+When a Titanium Mobile project that uses this module is built, the files from this platform/
+folder will be treated the same as files (if any) from the Titanium Mobile project's platform/ folder.
