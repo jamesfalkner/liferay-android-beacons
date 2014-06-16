@@ -6,6 +6,15 @@ A Titanium module to interact with iBeacons in Titanium projects that support An
 
 ## Accessing the liferay.beacons Module
 
+Place the ZIP file into your project's root directory, and declare the module in your `tiapp.xml` file:
+
+	<ti:app>
+		...
+		<modules>
+			<module platform="android">com.liferay.beacons</module>
+		</modules>
+	</ti:app>
+
 To access this module from JavaScript, you would do the following:
 
 	var TiBeacons = null;
