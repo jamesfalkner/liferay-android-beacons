@@ -6,16 +6,45 @@ A Titanium module to interact with iBeacons in Titanium projects that support An
 
 ## Accessing the liferay.beacons Module
 
-Place the ZIP file into your project's root directory, and declare the module in your `tiapp.xml` file:
+Place the ZIP file into your project's root directory, and declare the module and required android permissions in your `tiapp.xml` file (or in your custom `platform/android/AndroidManifest.xml` file if you are using that):
 
 	<ti:app>
+		...
+		<android xmlns:android="http://schemas.android.com/apk/res/android">
+			<manifest package="[YOUR_APP_PACKAGE_NAME]">
+				<uses-sdk	android:minSdkVersion="10"
+							android:targetSdkVersion="18"/>
+				<uses-permission
+					android:name="android.permission.BLUETOOTH"/>
+				<uses-permission
+					android:name="android.permission.BLUETOOTH_ADMIN"/>
+				<service	android:enabled="true"
+							android:exported="true"
+							android:isolatedProcess="false"
+							android:label="iBeacon"
+							android:name="com.radiusnetworks.ibeacon.service.IBeaconService">
+				</service>
+				<service	android:enabled="true" 
+							android:name="com.radiusnetworks.ibeacon.IBeaconIntentProcessor">
+							<meta-data android:name="background" android:value="true" />
+					<intent-filter 
+						android:priority="1" >
+						<action android:name="[YOUR_APP_PACKAGE_NAME].DID_RANGING"/>
+						<action android:name="[YOUR_APP_PACKAGE_NAME].DID_MONITORING"/>
+					</intent-filter>
+				</service>  
+			</manifest>
+		</android>
 		...
 		<modules>
 			<module platform="android">com.liferay.beacons</module>
 		</modules>
+		...
 	</ti:app>
 
-To access this module from JavaScript, you would do the following:
+Don't forget to replace the `[YOUR_APP_PACKAGE_NAME]` with your app's package name, e.g. *com.companyname.app*, and you can read [Radius Networks' docs](http://developer.radiusnetworks.com/ibeacon/android/configure.html) on this topic as well.
+
+Next, to access this module from JavaScript, you would do the following:
 
 	var TiBeacons = null;
 	if (Ti.Platform.name == "android") {
