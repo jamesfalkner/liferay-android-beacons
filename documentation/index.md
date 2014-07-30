@@ -18,21 +18,23 @@ Place the ZIP file into your project's root directory, and declare the module an
 					android:name="android.permission.BLUETOOTH"/>
 				<uses-permission
 					android:name="android.permission.BLUETOOTH_ADMIN"/>
-				<service	android:enabled="true"
-							android:exported="true"
-							android:isolatedProcess="false"
-							android:label="iBeacon"
-							android:name="com.radiusnetworks.ibeacon.service.IBeaconService">
-				</service>
-				<service	android:enabled="true" 
-							android:name="com.radiusnetworks.ibeacon.IBeaconIntentProcessor">
-							<meta-data android:name="background" android:value="true" />
-					<intent-filter 
-						android:priority="1" >
-						<action android:name="[YOUR_APP_PACKAGE_NAME].DID_RANGING"/>
-						<action android:name="[YOUR_APP_PACKAGE_NAME].DID_MONITORING"/>
-					</intent-filter>
-				</service>  
+				<application>
+					<service	android:enabled="true"
+								android:exported="true"
+								android:isolatedProcess="false"
+								android:label="iBeacon"
+								android:name="com.radiusnetworks.ibeacon.service.IBeaconService">
+					</service>
+					<service	android:enabled="true" 
+								android:name="com.radiusnetworks.ibeacon.IBeaconIntentProcessor">
+								<meta-data android:name="background" android:value="true" />
+						<intent-filter 
+							android:priority="1" >
+							<action android:name="[YOUR_APP_PACKAGE_NAME].DID_RANGING"/>
+							<action android:name="[YOUR_APP_PACKAGE_NAME].DID_MONITORING"/>
+						</intent-filter>
+					</service>
+				</application>
 			</manifest>
 		</android>
 		...
