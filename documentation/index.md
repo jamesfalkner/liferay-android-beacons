@@ -75,6 +75,11 @@ A typical workflow for beacons, and the corresponding JavaScript APIs for this m
 
 	`var TiBeacons = require('com.liferay.beacons');`
 
+**Note** that when Titanium evaluates the `require()` statement, it will immediately return from it while the module sets up the native BLE binding asynchronously. This means, for example, that you should not attempt to call `startMonitoringForRegion()` or `startRangingForRegion()` immediately after the call to `require()`. Instead, call them in a UI callback (e.g. when a button is clicked as part of an event handler, or when a specific window is opened). If you attempt to begin ranging or monitoring immediately after `require()`ing the module, you'll likely get an error such as
+```
+android.os.RemoteException: The IBeaconManager is not bound to the service. Call iBeaconManager.bind(IBeaconConsumer consumer) and wait for a callback to onIBeaconServiceConnect()
+```
+
 2. See if it's supported on the device via `TiBeacons.checkAvailability()` - If it is not, you should not attempt to call any other APIs, and somehow indicate that it's not supported in your app to the end user.
 
 3. Decide whether you want auto-ranging, and turn it on via `TiBeacons.setAutoRange(true)` if you want it, or `TiBeacons.setAutoRange(false)` if not.
@@ -211,6 +216,68 @@ followed by a 60000ms wait, and repeat.
 
 Check out [the source code to the underlying Radius Networks module](https://github.com/RadiusNetworks/android-ibeacon-service/blob/master/src/main/java/com/radiusnetworks/ibeacon/service/IBeaconService.java) for a longer discussion on the best values to use,
 and the defaults.
+
+## Example `app.js` for testing
+
+Here is a simple `app.js` application that you can use to see if things are working. You may need to modify it a bit to align with your specific beacon UUID.
+
+```
+// sample Titanium app.js app to test that things are working,
+// this assumes your hardware supports BLE and it's switched on.
+// you can use checkAvailability() to see if it's supported, but
+// we don't do that here just because we're lazy.
+
+var TiBeacons = require('com.liferay.beacons');
+
+// make a window with two buttons to start and stop monitoring
+var win = Titanium.UI.createWindow({  
+    title:'iBeacon Test',
+    backgroundColor:'#fff'
+});
+
+var b1 = Titanium.UI.createButton({
+	title: "Start Monitoring"
+});
+var b2 = Titanium.UI.createButton({
+	title: "Stop Monitoring"
+});
+
+var entered = function(reg) {
+	alert("entered region: " + reg.identifier);
+};
+
+var exited = function(reg) {
+	alert("exited region: " + reg.identifier);
+};
+
+b1.addEventListener('click', function(e) {
+
+	// add the listeners for beacon region monitoring
+    TiBeacons.addEventListener("enteredRegion", entered);
+    TiBeacons.addEventListener("exitedRegion", exited);
+
+    // start monitoring in the button click callback
+    TiBeacons.startMonitoringForRegion({
+      identifier: 'FOO',
+      uuid: '5AFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF'
+    });
+});
+
+b2.addEventListener('click', function(e) {
+
+	// stop everything
+	TiBeacons.stopMonitoringAllRegions();
+    TiBeacons.removeEventListener("enteredRegion", entered);
+    TiBeacons.removeEventListener("exitedRegion", exited);
+
+});
+
+win.setLayout('vertical');
+win.add(b1);
+win.add(b2);
+
+win.open();
+```
 
 ## Author
 
