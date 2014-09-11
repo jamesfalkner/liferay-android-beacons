@@ -56,7 +56,7 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 	@Kroll.onAppCreate
 	public static void onAppCreate(TiApplication app)
 	{
-		Log.d(TAG, "onAppCreate");
+		Log.d(TAG, "onAppCreate: Liferay Android Beacons 0.2");
 
 		iBeaconManager = IBeaconManager.getInstanceForApplication(app);
 
@@ -102,6 +102,18 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 		iBeaconManager.setBackgroundMode(this, flag);
 
 
+	}
+
+	@Kroll.method
+	public void enableAutoRanging()
+	{
+		setAutoRange(true);
+	}
+
+	@Kroll.method
+	public void disableAutoRanging()
+	{
+		setAutoRange(false);
 	}
 
 	@Kroll.method
@@ -255,6 +267,9 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 
 		Log.d(TAG, "[MODULE LIFECYCLE EVENT] stop");
 
+		if (!iBeaconManager.isBound(this)) {
+			iBeaconManager.bind(this);
+		}
 		super.onStop(activity);
 	}
 
@@ -264,6 +279,9 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 		// This method is called when the root context is being suspended
 
 		Log.d(TAG, "[MODULE LIFECYCLE EVENT] pause");
+		if (!iBeaconManager.isBound(this)) {
+			iBeaconManager.bind(this);
+		}
 
 		super.onPause(activity);
 	}
@@ -274,6 +292,9 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 		// This method is called when the root context is being resumed
 
 		Log.d(TAG, "[MODULE LIFECYCLE EVENT] resume");
+		if (!iBeaconManager.isBound(this)) {
+			iBeaconManager.bind(this);
+		}
 
 		super.onResume(activity);
 	}
