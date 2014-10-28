@@ -26,6 +26,10 @@
 	<iphone>
 	</iphone>
 	<android xmlns:android="http://schemas.android.com/apk/res/android">
+	<manifest>
+          <uses-permission android:name="android.permission.BLUETOOTH"/>
+          <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+        </manifest
 	</android>
 	<mobileweb>
 	</mobileweb>
