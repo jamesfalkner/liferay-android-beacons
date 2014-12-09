@@ -44,7 +44,7 @@ Place the ZIP file into your project's root directory, and declare the module an
 		...
 	</ti:app>
 
-Don't forget to replace the `[YOUR_APP_PACKAGE_NAME]` with your app's package name, e.g. *com.companyname.app*, and you can read [Radius Networks' docs](http://developer.radiusnetworks.com/ibeacon/android/configure.html) on this topic as well.
+Don't forget to replace the `[YOUR_APP_PACKAGE_NAME]` with your app's package name, e.g. *com.companyname.app*, and you can read [Radius Networks' docs](http://altbeacon.github.io/android-beacon-library/configure.html) on this topic as well.
 
 Next, to access this module from JavaScript, you would do the following:
 
@@ -179,7 +179,7 @@ State can be either `inside` or `outside`. If the state is determined to be *unk
 		console.log("power: " + e.power);
 	}
 
-Note that the proximity could be one of `immediate`, `near`, `far`, or `unknown`. See the [Radius Networks' docs](http://developer.radiusnetworks.com/android-ibeacon-service/doc/com/radiusnetworks/ibeacon/IBeacon.html) for more detail about accuracy, rssi, and power values given in the callback object.
+Note that the proximity could be one of `immediate`, `near`, `far`, or `unknown`. See the [Radius Networks' docs](http://altbeacon.github.io/android-beacon-library/distance-calculations.html) for more detail about accuracy, rssi, and power values given in the callback object.
 
 ### Foreground vs. Background
 
@@ -214,7 +214,7 @@ is detected), then the device will scan for iBeacons for 1000ms, then wait 2000m
 `TiBeacons.setBackgroundMode(true);` when the app is sent to the background), it will scan for iBeacons for 5000ms,
 followed by a 60000ms wait, and repeat.
 
-Check out [the source code to the underlying Radius Networks module](https://github.com/RadiusNetworks/android-ibeacon-service/blob/master/src/main/java/com/radiusnetworks/ibeacon/service/IBeaconService.java) for a longer discussion on the best values to use,
+Check out [the source code to the underlying Radius Networks module](https://github.com/AltBeacon/android-beacon-library/blob/master/src/main/java/org/altbeacon/beacon/service/BeaconService.java) for a longer discussion on the best values to use,
 and the defaults.
 
 ## Example `app.js` for testing
