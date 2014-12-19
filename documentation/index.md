@@ -25,10 +25,10 @@ Place the ZIP file into your project's root directory, and declare the module an
 								android:label="iBeacon"
 								android:name="com.radiusnetworks.ibeacon.service.IBeaconService">
 					</service>
-					<service	android:enabled="true" 
+					<service	android:enabled="true"
 								android:name="com.radiusnetworks.ibeacon.IBeaconIntentProcessor">
 								<meta-data android:name="background" android:value="true" />
-						<intent-filter 
+						<intent-filter
 							android:priority="1" >
 							<action android:name="[YOUR_APP_PACKAGE_NAME].DID_RANGING"/>
 							<action android:name="[YOUR_APP_PACKAGE_NAME].DID_MONITORING"/>
@@ -105,13 +105,13 @@ You can also remove event listeners using the `TiBeacons.removeEventListener()`,
 	  identifier: 'Region by UUID only',
 	  uuid: '11111111-2222-3333-4444-555555555555'
 	});
-	
+
 	TiBeacons.startMonitoringForRegion({
 	  identifier: 'Region by UUID and major',
 	  uuid: '11111111-2222-3333-4444-555555555555',
 	  major: 2112
 	});
-	
+
 	TiBeacons.startMonitoringForRegion({
 	  identifier: 'Region by UUID and major and minor',
 	  uuid: '11111111-2222-3333-4444-555555555555',
@@ -127,7 +127,7 @@ If autoranging is enabled, then the moment a region is entered, ranging (which i
 
 If autoranging is NOT enabled, you must manually begin ranging (if you are interested in proximity/range events) like this:
 
-	TiBeacons.startRangingForRegion({
+	TiBeacons.startRangingForBeacons({
 	  identifier: 'Region by UUID only',
 	  uuid: '11111111-2222-3333-4444-555555555555'
 	});
@@ -138,7 +138,7 @@ To turn everything off:
 
     TiBeacons.stopRangingForAllBeacons();
     TiBeacons.stopMonitoringAllRegions();
-    
+
 ### Objects passed to the callbacks
 
 When one of your registered listeners' callbacks is called, they will receive different kinds of objects. Here are examples that print out all of the values received by each of your callbacks:
@@ -161,7 +161,7 @@ State can be either `inside` or `outside`. If the state is determined to be *unk
 
 	function determinedRegionStateCallback(e) {
 		console.log("identifer: " + e.identifier);
-		
+
 		// it's either 'inside' or 'outside'
 		console.log("regionState: " + e.regionState);
 	}
@@ -230,7 +230,7 @@ Here is a simple `app.js` application that you can use to see if things are work
 var TiBeacons = require('com.liferay.beacons');
 
 // make a window with two buttons to start and stop monitoring
-var win = Titanium.UI.createWindow({  
+var win = Titanium.UI.createWindow({
     title:'iBeacon Test',
     backgroundColor:'#fff'
 });

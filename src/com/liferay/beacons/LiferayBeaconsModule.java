@@ -104,18 +104,37 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 
 	}
 
+	/**
+	 * Turns on auto ranging. When auto ranging is on, upon entering a region, this
+	 * module will automatically begin ranging for beacons within that region, and
+	 * stop ranging for beacons when the region is exited. Note ranging requires more
+	 * battery power so care should be taken with this setting.
+	 */
 	@Kroll.method
 	public void enableAutoRanging()
 	{
 		setAutoRange(true);
 	}
 
+	/**
+	 * Turns off auto ranging. See description of enableAutoRanging for more details.
+	 *
+	 * @see #enableAutoRanging()
+	 */
 	@Kroll.method
 	public void disableAutoRanging()
 	{
 		setAutoRange(false);
 	}
 
+	/**
+	 * Turns auto ranging on or off. See description of enableAutoRanging for more details.
+	 *
+	 * @param autoRange if true, turns on auto ranging. Otherwise, turns it off.
+	 *
+	 * @see #enableAutoRanging()
+	 *
+	 */
 	@Kroll.method
 	public void setAutoRange(boolean autoRange)
 	{
@@ -125,7 +144,8 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 	}
 
 	/**
-	 * Set the scan periods for the bluetooth scanner. See [] for more detail.
+	 * Set the scan periods for the bluetooth scanner.
+	 *
 	 * @param scanPeriods the scan periods.
 	 */
 	@Kroll.method
@@ -175,6 +195,19 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 		} catch (RemoteException ex) {
 			Log.e(TAG, "Cannot start monitoring region " + TiConvert.toString(region, "identifier"), ex);
 		}
+	}
+
+
+	/**
+	 * Compatibility method for popular iOS FOSS iBeacon library.
+	 *
+	 * @see #startRangingForRegion(Object)
+	 *
+	 * @param region the region to range, expected to be a property dictionary from javascript code.
+	 */
+	@Kroll.method
+	public void startRangingForBeacons(Object region) {
+		startRangingForRegion(region);
 	}
 
 	/**
