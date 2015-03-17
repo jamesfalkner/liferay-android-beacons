@@ -3,3 +3,6 @@ bin
 build
 *.zip
 .apt_generated
+*.iml
+.idea/
+dist/liferay.beacons.jar

@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-version: 0.2
+version: 0.3
 apiversion: 2
 description: Enables Titanium apps supporting android to interact with iBeacons
 author: James Falkner

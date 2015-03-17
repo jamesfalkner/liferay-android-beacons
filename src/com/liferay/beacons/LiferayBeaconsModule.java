@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Liferay, Inc. All rights reserved.
+ * Copyright 2015 Liferay, Inc. All rights reserved.
  * http://www.liferay.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,8 +32,10 @@ import org.appcelerator.kroll.common.Log;
 import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.util.TiConvert;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Events: enteredRegion, exitedRegion, determinedRegionState, beaconProximity
@@ -412,19 +414,28 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 
 		iBeaconManager.setRangeNotifier(new RangeNotifier() {
 			public void didRangeBeaconsInRegion(Collection<IBeacon> iBeacons, Region region) {
+
+				List<KrollDict> finalBeacons = new ArrayList<KrollDict>(iBeacons.size());
+
 				for (IBeacon beacon : iBeacons) {
-					// identifier, uuid,major,minor,proximity,fromProximity,accuracy,rssi
-					KrollDict e = new KrollDict();
-					e.put("identifier", region.getUniqueId());
-					e.put("uuid", beacon.getProximityUuid());
-					e.put("major", beacon.getMajor());
-					e.put("minor", beacon.getMinor());
-					e.put("proximity", getProximityName(beacon.getProximity()));
-					e.put("accuracy", beacon.getAccuracy());
-					e.put("rssi", beacon.getRssi());
-					e.put("power", beacon.getTxPower());
-					fireEvent("beaconProximity", e);
+					KrollDict beaconDict = new KrollDict();
+					beaconDict.put("identifier", region.getUniqueId());
+					beaconDict.put("uuid", beacon.getProximityUuid());
+					beaconDict.put("major", beacon.getMajor());
+					beaconDict.put("minor", beacon.getMinor());
+					beaconDict.put("proximity", getProximityName(beacon.getProximity()));
+					beaconDict.put("accuracy", beacon.getAccuracy());
+					beaconDict.put("rssi", beacon.getRssi());
+					beaconDict.put("power", beacon.getTxPower());
+					finalBeacons.add(beaconDict);
+
+					fireEvent("beaconProximity", beaconDict);
 				}
+
+				KrollDict e = new KrollDict();
+				e.put("identifier", region.getUniqueId());
+				e.put("beacons", finalBeacons.toArray());
+				fireEvent("beaconRanges", e);
 			}
 
 		});
