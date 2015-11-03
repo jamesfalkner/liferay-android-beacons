@@ -50,6 +50,7 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 	private static final String TAG = "LiferayBeaconsModule";
 
 	private boolean autoRange = true;
+	private boolean ready = false;
 
 	public LiferayBeaconsModule() {
 		super();
@@ -58,7 +59,7 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 	@Kroll.onAppCreate
 	public static void onAppCreate(TiApplication app)
 	{
-		Log.d(TAG, "onAppCreate: Liferay Android Beacons 0.2");
+		Log.d(TAG, "onAppCreate: Liferay Android Beacons 0.4");
 
 		iBeaconManager = IBeaconManager.getInstanceForApplication(app);
 
@@ -84,6 +85,16 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 		} catch (Exception ex) {
 			return false;
 		}
+	}
+	
+	/**
+	 * See if Module is Ready
+	 *
+	 * @return true/false
+	 */
+	@Kroll.method
+	public boolean isReady() {
+		return this.ready;
 	}
 
 	/**
@@ -344,10 +355,11 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 
 		super.onDestroy(activity);
 	}
-
+	
 	public void onIBeaconServiceConnect() {
 
 		Log.d(TAG, "onIBeaconServiceConnect");
+		this.ready = true; //so we know the module is ready to setup event listeners
 		iBeaconManager.setMonitorNotifier(new MonitorNotifier() {
 
 			public void didEnterRegion(Region region) {
