@@ -15,8 +15,9 @@
 # limitations under the License.
 #
 
-version: 0.3
+version: 0.4
 apiversion: 2
+architectures: armeabi armeabi-v7a x86
 description: Enables Titanium apps supporting android to interact with iBeacons
 author: James Falkner
 license: Apache Software License 2.0
