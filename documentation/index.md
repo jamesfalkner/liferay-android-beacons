@@ -13,12 +13,14 @@ Place the ZIP file into your project's root directory, and declare the module an
   ...
   <android xmlns:android="http://schemas.android.com/apk/res/android">
     <manifest package="[YOUR_APP_PACKAGE_NAME]">
-      <uses-sdk	android:minSdkVersion="10"
-            android:targetSdkVersion="18"/>
+      <uses-sdk	android:minSdkVersion="21"
+            android:targetSdkVersion="26"/>
       <uses-permission
         android:name="android.permission.BLUETOOTH"/>
       <uses-permission
         android:name="android.permission.BLUETOOTH_ADMIN"/>
+      <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"/>
       <application>
         <service	android:enabled="true"
               android:exported="true"
@@ -59,6 +61,19 @@ if (Ti.Platform.name === "android") {
 }
 ```
 
+As of Android 6.0, your app will need to request permission after launch in the form of a popup. This will need to be accepted by the user or else the service will fail. You can request permisison using an approach simialr to the below.
+
+```
+var permissions = ['android.permission.ACCESS_FINE_LOCATION'];
+Ti.Android.requestPermissions(permissions, function(e) {
+  if (e.success) {
+    Ti.API.info("SUCCESS");
+  } else {
+    Ti.API.info("ERROR: " + e.error);
+  }
+});
+```
+
 Note that this library is only available for the Android platform. Attempting to use it on other platforms
 will fail in different ways and *people will point and laugh at you*.
 
@@ -88,7 +103,23 @@ var TiBeacons = require('com.liferay.beacons');
 android.os.RemoteException: The IBeaconManager is not bound to the service. Call iBeaconManager.bind(IBeaconConsumer consumer) and wait for a callback to onIBeaconServiceConnect()
 ```
 
-2. See if it's supported on the device via `TiBeacons.checkAvailability()` - If it is not, you should not attempt to call any other APIs, and somehow indicate that it's not supported in your app to the end user.
+Instead of guessing when the service is ready, we can check using the following method:
+
+```
+var handle;
+handle = setInterval(function(){
+    if(!TiBeacons.isReady())
+        return;
+
+    Ti.API.info("Okay! Module is ready!");  
+    clearInterval(handle);
+    handle = null;
+
+    //setup your event listeners here
+}, 1000);
+```
+
+2. See if it's supported on the device via `TiBeacons.checkAvailability()` - If it is not, you should not attempt to call any other APIs, and somehow indicate that it's not supported in your app to the end user. The module 
 
 3. Decide whether you want auto-ranging, and turn it on via `TiBeacons.setAutoRange(true)` if you want it, or `TiBeacons.setAutoRange(false)` if not. The default is `true` (that is, auto-ranging is enabled).
 
