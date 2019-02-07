@@ -15,9 +15,9 @@
 # limitations under the License.
 #
 
-version: 1.4
-apiversion: 3
-architectures: armeabi-v7a x86
+version: 2.0.0
+apiversion: 4
+architectures: arm64-v8a armeabi-v7a x86
 description: Enables Titanium apps supporting android to interact with iBeacons
 author: James Falkner
 license: Apache Software License 2.0
@@ -29,4 +29,4 @@ name: liferay.beacons
 moduleid: com.liferay.beacons
 guid: 57bcb713-b5cd-4bb1-95d5-9141b6074802
 platform: android
-minsdk: 6.1.2.GA
+minsdk: 7.0.0.GA
