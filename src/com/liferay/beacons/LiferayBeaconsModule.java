@@ -98,6 +98,24 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 	}
 
 	/**
+	 * Binds the activity to the Beacon Service
+	 */
+	@Kroll.method
+	public void bindBeaconService() {
+		Log.d(TAG, "bindService");
+		iBeaconManager.bind(this);
+	}
+
+	/**
+	 * Unbinds the activity to the Beacon Service
+	 */
+	@Kroll.method
+	public void unbindBeaconService() {
+		Log.d(TAG, "unbindService");
+		iBeaconManager.unBind(this);
+	}
+
+	/**
 	 * Throttles down iBeacon library when app placed in background (but you have to
 	 * detect this yourself, this module does not know when apps are put in background).
 	 *
@@ -357,6 +375,9 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 	}
 	
 	public void onIBeaconServiceConnect() {
+		KrollDict e = new KrollDict();
+		e.put("message", "success");
+		fireEvent("serviceBound", e);
 
 		Log.d(TAG, "onIBeaconServiceConnect");
 		this.ready = true; //so we know the module is ready to setup event listeners

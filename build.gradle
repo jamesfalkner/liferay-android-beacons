@@ -1,0 +1,6 @@
+
+dependencies {
+	// Add the module's library dependencies here.
+	// See:  https://developer.android.com/studio/build/dependencies
+	implementation 'org.altbeacon:android-beacon-library:2+'
+}
