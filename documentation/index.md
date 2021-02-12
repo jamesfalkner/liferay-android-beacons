@@ -13,14 +13,14 @@ Place the ZIP file into your project's root directory, and declare the module an
   ...
   <android xmlns:android="http://schemas.android.com/apk/res/android">
     <manifest package="[YOUR_APP_PACKAGE_NAME]">
-      <uses-sdk	android:minSdkVersion="21"
-            android:targetSdkVersion="26"/>
       <uses-permission
         android:name="android.permission.BLUETOOTH"/>
       <uses-permission
         android:name="android.permission.BLUETOOTH_ADMIN"/>
       <uses-permission
         android:name="android.permission.ACCESS_FINE_LOCATION"/>
+      <uses-permission
+        android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
       <application>
         <service	android:enabled="true"
               android:exported="true"
@@ -103,10 +103,11 @@ var TiBeacons = require('com.liferay.beacons');
 android.os.RemoteException: The IBeaconManager is not bound to the service. Call iBeaconManager.bind(IBeaconConsumer consumer) and wait for a callback to onIBeaconServiceConnect()
 ```
 
-Instead of guessing when the service is ready, we can check using the following method:
+Instead of guessing when the service is ready, we can check using the following method adn force the bind:
 
 ```
 var handle;
+TiBeacons.bindBeaconService(); // This will force the bind to prevent TiBeacons.isReady() from always remaining false
 handle = setInterval(function(){
     if(!TiBeacons.isReady())
         return;
@@ -119,7 +120,7 @@ handle = setInterval(function(){
 }, 1000);
 ```
 
-2. See if it's supported on the device via `TiBeacons.checkAvailability()` - If it is not, you should not attempt to call any other APIs, and somehow indicate that it's not supported in your app to the end user. The module 
+2. See if it's supported on the device via `TiBeacons.checkAvailability()` - If it is not, you should not attempt to call any other APIs, and somehow indicate that it's not supported in your app to the end user. The module
 
 3. Decide whether you want auto-ranging, and turn it on via `TiBeacons.setAutoRange(true)` if you want it, or `TiBeacons.setAutoRange(false)` if not. The default is `true` (that is, auto-ranging is enabled).
 
@@ -184,6 +185,7 @@ To turn everything off:
 ```
 TiBeacons.stopRangingForAllBeacons();
 TiBeacons.stopMonitoringAllRegions();
+TiBeacons.unbindBeaconService(); // to force unbind
 ```
 
 ### Objects passed to the callbacks
