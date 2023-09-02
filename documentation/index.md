@@ -291,6 +291,8 @@ TiBeacons.startAdvertise({
 TiBeacons.stopAdvertise();
 ```
 
+Add `<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>` to your tiapp.xml `<manifest>` block and into your permission request if you use Android 12+
+
 There are two events that will be fired: `success` or `error` (with errorCode).
 
 ### Foreground vs. Background
