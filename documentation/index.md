@@ -251,7 +251,7 @@ You normally only need to listen for `beaconProximity` *or* `beaconRanges`. You 
 
 Also note that the order of the beacons in the array of the `beaconRanges` event is not guaranteed to be in any particular order across callbacks.
 
-```
+```js
 function beaconRangingCallback(e) {
 
   console.log("I am in the " + e.identifier + " region");
@@ -271,6 +271,27 @@ function beaconRangingCallback(e) {
     }
 }
 ```
+
+### Emulate a beacon - start/stop advertising
+
+You can emulate a beacon with `startAdvertise()`/`stopAdvertise()`.
+If you start to advertise you have to set those parameters:
+`id1` (string), `id2`(string), `id3`(string), `txPower`(int), `manufacturer`(int), `beaconLayout` (string). An example:
+
+```js
+TiBeacons.startAdvertise({
+  id1: "2f234454-cf6d-4a0f-adf2-f4911ba9ffa6",
+  id2: "1",
+  id3: "2",
+  txPower: -58,
+  manufacturer: 0x0118,
+  beaconLayout: "m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"
+})
+
+TiBeacons.stopAdvertise();
+```
+
+There are two events that will be fired: `success` or `error` (with errorCode).
 
 ### Foreground vs. Background
 

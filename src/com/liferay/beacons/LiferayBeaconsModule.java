@@ -19,12 +19,19 @@
 
 package com.liferay.beacons;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.RemoteException;
 import com.radiusnetworks.ibeacon.*;
+
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.BeaconTransmitter;
 import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.kroll.KrollModule;
 import org.appcelerator.kroll.annotations.Kroll;
@@ -33,12 +40,13 @@ import org.appcelerator.titanium.TiApplication;
 import org.appcelerator.titanium.util.TiConvert;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * Events: enteredRegion, exitedRegion, determinedRegionState, beaconProximity
+ * Events: enteredRegion, exitedRegion, determinedRegionState, beaconProximity, success, error
  */
 @Kroll.module(name="LiferayBeacons", id="com.liferay.beacons")
 public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
@@ -51,6 +59,7 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 
 	private boolean autoRange = true;
 	private boolean ready = false;
+	private BeaconTransmitter beaconTransmitter;
 
 	public LiferayBeaconsModule() {
 		super();
@@ -503,6 +512,52 @@ public class LiferayBeaconsModule extends KrollModule implements IBeaconConsumer
 	public boolean bindService(Intent intent, ServiceConnection serviceConnection, int i) {
 		Log.d(TAG, "bindService");
 		return super.getActivity().bindService(intent, serviceConnection, i);
+	}
+
+	@SuppressLint("NewApi")
+	@Kroll.method
+	public void startAdvertise(KrollDict kd) {
+		String id1 = TiConvert.toString(kd.get("id1"), "");
+		String id2 = TiConvert.toString(kd.get("id2"), "");
+		String id3 = TiConvert.toString(kd.get("id3"), "");
+		String beaconLayout = TiConvert.toString(kd.get("beaconLayout"), "");
+		int manu = TiConvert.toInt(kd.get("manufacturer"), 0);
+		int txPower = TiConvert.toInt(kd.get("txPower"), 0);
+
+		Beacon beacon = new Beacon.Builder()
+				.setId1(id1)
+				.setId2(id2)
+				.setId3(id3)
+				.setManufacturer(manu)
+				.setTxPower(txPower)
+				.setDataFields(Arrays.asList(new Long[] {0l}))
+				.build();
+		BeaconParser beaconParser = new BeaconParser().setBeaconLayout(beaconLayout);
+		beaconTransmitter = new BeaconTransmitter(getApplicationContext(), beaconParser);
+		beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
+			@Override
+			public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+				super.onStartSuccess(settingsInEffect);
+				KrollDict kdSuccess = new KrollDict();
+				fireEvent("success", kdSuccess);
+			}
+
+			@Override
+			public void onStartFailure(int errorCode) {
+				super.onStartFailure(errorCode);
+				KrollDict kdError = new KrollDict();
+				kdError.put("errorCode", errorCode);
+				fireEvent("error", kdError);
+			}
+		});
+	}
+
+	@Kroll.method
+	public void stopAdvertise() {
+		if (beaconTransmitter != null) {
+			beaconTransmitter.stopAdvertising();
+			beaconTransmitter = null;
+		}
 	}
 }
 
