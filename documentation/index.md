@@ -8,13 +8,15 @@ A Titanium module to interact with iBeacons in Titanium projects that support An
 
 Place the ZIP file into your project's root directory, and declare the module and required android permissions in your `tiapp.xml` file (or in your custom `platform/android/AndroidManifest.xml` file if you are using that):
 
-```
+```xml
 <ti:app>
   ...
   <android xmlns:android="http://schemas.android.com/apk/res/android">
     <manifest package="[YOUR_APP_PACKAGE_NAME]">
       <uses-permission
         android:name="android.permission.BLUETOOTH"/>
+      <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"/>
       <uses-permission
         android:name="android.permission.BLUETOOTH_ADMIN"/>
       <uses-permission
@@ -28,7 +30,7 @@ Place the ZIP file into your project's root directory, and declare the module an
               android:label="iBeacon"
               android:name="com.radiusnetworks.ibeacon.service.IBeaconService">
         </service>
-        <service	android:enabled="true"
+        <service	android:enabled="true" android:exported="true"
               android:name="com.radiusnetworks.ibeacon.IBeaconIntentProcessor">
               <meta-data android:name="background" android:value="true" />
           <intent-filter
@@ -52,7 +54,7 @@ Don't forget to replace the `[YOUR_APP_PACKAGE_NAME]` with your app's package na
 
 Next, to access this module from JavaScript, you would do the following:
 
-```
+```js
 var TiBeacons = null;
 if (Ti.Platform.name === "android") {
   TiBeacons = require("com.liferay.beacons");
@@ -63,7 +65,7 @@ if (Ti.Platform.name === "android") {
 
 As of Android 6.0, your app will need to request permission after launch in the form of a popup. This will need to be accepted by the user or else the service will fail. You can request permisison using an approach simialr to the below.
 
-```
+```js
 var permissions = ['android.permission.ACCESS_FINE_LOCATION'];
 Ti.Android.requestPermissions(permissions, function(e) {
   if (e.success) {
@@ -93,7 +95,7 @@ A typical workflow for beacons, and the corresponding JavaScript APIs for this m
 
 1. Get a reference to the module via
 
-```
+```js
 var TiBeacons = require('com.liferay.beacons');
 ```
 
@@ -105,7 +107,7 @@ android.os.RemoteException: The IBeaconManager is not bound to the service. Call
 
 Instead of guessing when the service is ready, we can check using the following method adn force the bind:
 
-```
+```js
 var handle;
 TiBeacons.bindBeaconService(); // This will force the bind to prevent TiBeacons.isReady() from always remaining false
 handle = setInterval(function(){
@@ -126,7 +128,7 @@ handle = setInterval(function(){
 
 4. Attach listeners for region and range events
 
-```
+```js
 TiBeacons.addEventListener("enteredRegion", handleRegionEnter);
 TiBeacons.addEventListener("exitedRegion", handleRegionExit);
 TiBeacons.addEventListener("determinedRegionState", handleRegionDeterminedState);
@@ -138,13 +140,13 @@ TiBeacons.addEventListener("beaconRanges", handleRanges);
 
 You can also remove event listeners using the `TiBeacons.removeEventListener()`, for example:
 
-```
+```js
 TiBeacons.removeEventListener("enteredRegion", handleRegionEnter);
 ```
 
 5. Begin monitoring one or more regions
 
-```
+```js
 TiBeacons.startMonitoringForRegion({
   identifier: 'Region by UUID only',
   uuid: '11111111-2222-3333-4444-555555555555'
@@ -171,7 +173,7 @@ If autoranging is enabled, then the moment a region is entered, ranging (which i
 
 If autoranging is NOT enabled, you must manually begin ranging (if you are interested in proximity/range events) like this:
 
-```
+```js
 TiBeacons.startRangingForBeacons({
   identifier: 'Region by UUID only',
   uuid: '11111111-2222-3333-4444-555555555555'
@@ -182,7 +184,7 @@ TiBeacons.startRangingForBeacons({
 
 To turn everything off:
 
-```
+```js
 TiBeacons.stopRangingForAllBeacons();
 TiBeacons.stopMonitoringAllRegions();
 TiBeacons.unbindBeaconService(); // to force unbind
@@ -194,7 +196,7 @@ When one of your registered listeners' callbacks is called, they will receive di
 
 #### enteredRegion
 
-```
+```js
 function enteredRegionCallback(e) {
   console.log("identifer: " + e.identifier);
 }
@@ -202,7 +204,7 @@ function enteredRegionCallback(e) {
 
 #### exitedRegion
 
-```
+```js
 function exitedRegionCallback(e) {
   console.log("identifer: " + e.identifier);
 }
@@ -212,7 +214,7 @@ function exitedRegionCallback(e) {
 
 State can be either `inside` or `outside`. If the state is determined to be *unknown* then the callback will not be called.
 
-```
+```js
 function determinedRegionStateCallback(e) {
   console.log("identifer: " + e.identifier);
 
@@ -223,7 +225,7 @@ function determinedRegionStateCallback(e) {
 
 #### beaconProximity
 
-```
+```js
 function beaconProximityCallback(e) {
   console.log("identifer: " + e.identifier);
   console.log("uuid: " + e.uuid);
@@ -251,7 +253,7 @@ You normally only need to listen for `beaconProximity` *or* `beaconRanges`. You 
 
 Also note that the order of the beacons in the array of the `beaconRanges` event is not guaranteed to be in any particular order across callbacks.
 
-```
+```js
 function beaconRangingCallback(e) {
 
   console.log("I am in the " + e.identifier + " region");
@@ -272,6 +274,29 @@ function beaconRangingCallback(e) {
 }
 ```
 
+### Emulate a beacon - start/stop advertising
+
+You can emulate a beacon with `startAdvertise()`/`stopAdvertise()`.
+If you start to advertise you have to set those parameters:
+`id1` (string), `id2`(string), `id3`(string), `txPower`(int), `manufacturer`(int), `beaconLayout` (string). An example:
+
+```js
+TiBeacons.startAdvertise({
+  id1: "2f234454-cf6d-4a0f-adf2-f4911ba9ffa6",
+  id2: "1",
+  id3: "2",
+  txPower: -58,
+  manufacturer: 0x0118,
+  beaconLayout: "m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"
+})
+
+TiBeacons.stopAdvertise();
+```
+
+Add `<uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>` to your tiapp.xml `<manifest>` block and into your permission request if you use Android 12+
+
+There are two events that will be fired: `success` or `error` (with errorCode).
+
 ### Foreground vs. Background
 
 It is is a good idea for apps to reduce their power consumption when placed in the background by
@@ -283,7 +308,7 @@ however **this module DOES NOT DETECT when your app is sent to the background or
 You must manually detect foreground/background events and call the appropriate APIs on this module to tell it
 that it is now in the background and should use the background scan periods. Check out [Ben Bahrenburg's excellent
 Android Tools](https://github.com/benbahrenburg/benCoding.Android.Tools) for a super-easy way to auto-detect this. Here's an example:
-```
+```js
 var androidPlatformTools = require('bencoding.android.tools').createPlatform();
 var isForeground = androidPlatformTools.isInForeground();
 console.log("Am I currently in the foreground? " + isForeground);
@@ -291,7 +316,7 @@ console.log("Am I currently in the foreground? " + isForeground);
 You can call this repeatedly (e.g. every 5 seconds) using `setInterval()` and when foreground vs. background is detected, call `TiBeacons.setBackgroundMode()`. At least that's what I do.
 
 To configure the scan periods for foreground and background:
-```
+```js
 var TiBeacons = require('com.liferay.beacons');
 TiBeacons.setScanPeriods({
   foregroundScanPeriod: 1000,
@@ -312,7 +337,7 @@ and the defaults.
 
 Here is a simple `app.js` application that you can use to see if things are working. You may need to modify it a bit to align with your specific beacon UUID.
 
-```
+```js
 // sample Titanium app.js app to test that things are working,
 // this assumes your hardware supports BLE and it's switched on.
 // you can use checkAvailability() to see if it's supported, but
